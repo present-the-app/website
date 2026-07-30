@@ -1,0 +1,160 @@
+---
+import "../styles/global.css";
+import { site } from "../config/site";
+import { t, localeFromPath, alternatePath } from "../i18n";
+import type { Locale } from "../config/site";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set on pages that should never be indexed even after launch. */
+  noindex?: boolean;
+  /**
+   * Overrides the computed translation targets. Needed for content whose
+   * routes are not in the static slug map, i.e. blog posts, where the pairing
+   * comes from the entry's `translationKey` instead.
+   */
+  altPaths?: Partial<Record<Locale, string>>;
+}
+
+const { title, description, noindex: pageNoindex, altPaths } = Astro.props;
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+
+const pageTitle = title ? `${title} · ${site.name}` : s.meta.title;
+const pageDescription = description ?? s.meta.description;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+const alts = Object.fromEntries(
+  site.locales.map((l) => [l, altPaths?.[l] ?? alternatePath(Astro.url.pathname, l)]),
+) as Record<Locale, string>;
+
+const alternates = site.locales.map((l) => ({ locale: l, path: alts[l] }));
+const ogImage = new URL("/og/default.png", site.url).href;
+
+const OG_LOCALE: Record<Locale, string> = {
+  en: "en_GB",
+  fr: "fr_CH",
+};
+
+// The site-wide flag, or a per-page override for pages that must never be
+// indexed. Emits a robots meta tag in addition to the rule in robots.txt.
+const hidden = site.noindex || pageNoindex;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${site.url}/#organization`,
+      name: site.name,
+      url: site.url,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${site.url}/#website`,
+      name: site.name,
+      url: site.url,
+      description: pageDescription,
+      publisher: { "@id": `${site.url}/#organization` },
+      inLanguage: [...site.locales],
+    },
+  ],
+  // No SoftwareApplication type: Google wants offers.price plus a rating or
+  // review, and there are none yet.
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    {hidden && <meta name="robots" content="noindex, nofollow" />}
+
+    {
+      /* Skipped on hidden pages. /404 has no canonical URL of its own, and
+         claiming the home pages are its translations would be wrong. Astro
+         generates no hreflang itself; the sitemap integration only adds
+         alternates to the sitemap, not to <head>. */
+      !pageNoindex && (
+        <>
+          <link rel="canonical" href={canonical} />
+          {alternates.map((a) => (
+            <link
+              rel="alternate"
+              hreflang={a.locale}
+              href={new URL(a.path, site.url).href}
+            />
+          ))}
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href={new URL(alts.en, site.url).href}
+          />
+        </>
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={s.meta.ogAlt} />
+    <meta property="og:locale" content={OG_LOCALE[locale]} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    {/* iOS composites transparency to black, so this one must be opaque. */}
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#FBFAF8" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      /* Nothing is loaded and no third party is contacted while this is blank. */
+      site.analyticsSrc && (
+        <script is:inline defer src={site.analyticsSrc} />
+      )
+    }
+  </head>
+
+  <body>
+    <a href="#main" class="skip">{s.nav.skipToContent}</a>
+    <Nav alts={alts} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer alts={alts} />
+    <style>
+      .skip {
+        position: absolute;
+        left: -9999px;
+        top: 8px;
+        z-index: 100;
+        background: var(--color-pine);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: var(--radius-btn);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .skip:focus {
+        left: 16px;
+      }
+    </style>
+  </body>
+</html>

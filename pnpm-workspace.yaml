@@ -1,0 +1,5 @@
+# pnpm 11 moved these settings out of package.json's "pnpm" field.
+# esbuild's postinstall places its platform binary; without this the install
+# exits non-zero and `pnpm build` fails before Astro ever runs.
+allowBuilds:
+  esbuild: true

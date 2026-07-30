@@ -1,0 +1,25 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+---
+
+{/*
+  The only place on the page that concedes a limit. Everything else states what
+  the product does; this states what it cannot, which is what makes the rest
+  believable. It also reframes the instant reroll as a consequence of that
+  limit rather than as a feature.
+*/}
+<Section tone="surface" eyebrow={s.limits.eyebrow} title={s.limits.title}>
+  <p class="body">{s.limits.body}</p>
+</Section>
+
+<style>
+  .body {
+    font-size: 18px;
+    color: var(--color-muted);
+    max-width: 58ch;
+    margin: 26px 0 0;
+  }
+</style>

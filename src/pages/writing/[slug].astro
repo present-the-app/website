@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Prose from "../../components/Prose.astro";
+import { en } from "../../i18n/en";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+  return posts
+    .filter((p) => p.data.lang === "en")
+    .map((post) => {
+      // Pair with the other languages via translationKey, so the language
+      // switcher lands on the same article rather than the home page.
+      const sibling = posts.find(
+        (p) => p.data.lang === "fr" && p.data.translationKey === post.data.translationKey,
+      );
+      return {
+        params: { slug: post.id.split("/").pop()! },
+        props: { post, frSlug: sibling?.id.split("/").pop() ?? null },
+      };
+    });
+}
+
+const { post, frSlug } = Astro.props;
+const { Content } = await render(post);
+
+const altPaths = { fr: frSlug ? `/fr/journal/${frSlug}/` : "/fr/journal/" };
+
+const df = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  altPaths={altPaths}
+>
+  <Prose
+    title={post.data.title}
+    updated={`${en.blog.published} ${df.format(post.data.pubDate)}`}
+  >
+    <Content />
+  </Prose>
+</Base>

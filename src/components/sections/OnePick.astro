@@ -1,0 +1,53 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+---
+
+<Section id="one-pick" eyebrow={s.onePick.eyebrow} title={s.onePick.title}>
+  <p class="lede">{s.onePick.body}</p>
+
+  <ul class="points">
+    {
+      s.onePick.points.map((p) => (
+        <li class="point">
+          <h3 class="point__t">{p.title}</h3>
+          <p class="point__b">{p.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .lede {
+    font-size: 18px;
+    color: var(--color-muted);
+    max-width: 56ch;
+    margin: 22px 0 0;
+  }
+  .points {
+    list-style: none;
+    padding: 0;
+    margin: 52px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+  }
+  .point {
+    border-top: 1px solid var(--color-border);
+    padding-top: 18px;
+  }
+  .point__t {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .point__b {
+    font-size: 15.5px;
+    color: var(--color-muted);
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,148 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+const w = s.wishlists;
+---
+
+<Section id="wishlists" tone="surface" eyebrow={w.eyebrow} title={w.title}>
+  <div class="grid">
+    <div>
+      <p class="lede">{w.body}</p>
+      <ul class="points">
+        {
+          w.points.map((p) => (
+            <li class="point">
+              <h3 class="point__t">{p.title}</h3>
+              <p class="point__b">{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {/* What a friend sees when they open the link: no app, no account. */}
+    <div class="demo" aria-hidden="true">
+      <div class="list">
+        <p class="list__hd">{w.claimDemo.listName}</p>
+        {
+          w.claimDemo.items.map((item) => (
+            <div class:list={["row", item.state === "claimed" && "row--claimed"]}>
+              <div class="row__main">
+                <span class="row__name">{item.name}</span>
+                <span class="row__price">{item.price}</span>
+              </div>
+              {item.state === "claimed" ? (
+                <span class="row__taken">{w.claimDemo.claimed}</span>
+              ) : (
+                <span class="u-btn-soft row__claim">{w.claimDemo.claim}</span>
+              )}
+            </div>
+          ))
+        }
+      </div>
+      <p class="demo__cap">{w.claimDemo.ownerNote}</p>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: 56px;
+    align-items: start;
+    margin-top: 34px;
+  }
+  .lede {
+    font-size: 18px;
+    color: var(--color-muted);
+    max-width: 48ch;
+    margin: 0;
+  }
+  .points {
+    list-style: none;
+    padding: 0;
+    margin: 34px 0 0;
+    display: grid;
+    gap: 24px;
+  }
+  .point {
+    border-top: 1px solid var(--color-border);
+    padding-top: 16px;
+  }
+  .point__t {
+    font-size: 16.5px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .point__b {
+    font-size: 15.5px;
+    color: var(--color-muted);
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  .list {
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .list__hd {
+    margin: 0;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .row__main {
+    display: grid;
+    gap: 3px;
+  }
+  .row__name {
+    font-size: 15.5px;
+  }
+  .row__price {
+    font-size: 13px;
+    color: var(--color-faint);
+  }
+  /* Claimed rows recede rather than fill with accent: a wall of green has no
+     hierarchy, and the still-free item is the only thing a visitor came for. */
+  .row--claimed .row__name {
+    color: var(--color-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--color-border);
+  }
+  .row__taken {
+    font-size: 13px;
+    color: var(--color-faint);
+    font-style: italic;
+  }
+  .demo__cap {
+    font-size: 14px;
+    color: var(--color-faint);
+    margin: 14px 2px 0;
+    max-width: 40ch;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

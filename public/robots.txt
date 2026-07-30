@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://present-the-app.com/sitemap-index.xml

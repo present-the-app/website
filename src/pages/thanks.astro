@@ -1,0 +1,87 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../config/site";
+import { strings } from "../i18n";
+import type { Locale } from "../config/site";
+
+/**
+ * Every language on one page: the form provider's post-signup redirect is a
+ * single setting rather than a per-form field, so signups in either language
+ * land here.
+ *
+ * Always noindex, even after the rest of the site opens up. You only reach it
+ * by submitting a form, and it has nothing to offer a searcher.
+ */
+const HOME: Record<Locale, string> = { en: "/", fr: "/fr/" };
+
+const blocks = site.locales.map((l) => {
+  const s = strings[l];
+  return {
+    locale: l,
+    s,
+    share: `https://wa.me/?text=${encodeURIComponent(s.thanks.shareText + site.url)}`,
+    home: HOME[l],
+  };
+});
+---
+
+<Base title={strings.en.thanks.title} description={strings.en.thanks.body} noindex>
+  <div class="u-wrap page">
+    {
+      blocks.map((b, i) => (
+        <section class="block" lang={b.locale}>
+          {i === 0 ? (
+            <h1 class="u-display h1">{b.s.thanks.title}</h1>
+          ) : (
+            <h2 class="u-display h2">{b.s.thanks.title}</h2>
+          )}
+          <p class="body">{b.s.thanks.body}</p>
+          <p class="share">{b.s.thanks.shareTitle}</p>
+          <a class="u-btn" href={b.share} target="_blank" rel="noopener noreferrer">
+            {b.s.thanks.shareCta}
+          </a>
+          <p class="home">
+            <a class="u-link" href={b.home}>
+              {b.s.thanks.home}
+            </a>
+          </p>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 90px 100px;
+    max-width: 760px;
+  }
+  .block + .block {
+    margin-top: 52px;
+    padding-top: 44px;
+    border-top: 1px solid var(--color-border);
+  }
+  .h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    margin: 0 0 18px;
+  }
+  .h2 {
+    font-size: clamp(24px, 3.2vw, 34px);
+    margin: 0 0 16px;
+  }
+  .body {
+    font-size: 18px;
+    color: var(--color-muted);
+    margin: 0 0 30px;
+    max-width: 54ch;
+  }
+  .share {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .home {
+    margin: 26px 0 0;
+    font-size: 15px;
+  }
+</style>

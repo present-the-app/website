@@ -1,0 +1,27 @@
+{
+  "name": "Present · Waitlist",
+  "short_name": "Present",
+  "description": "Gift ideas from questions about the person you're buying for.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FBFAF8",
+  "theme_color": "#FBFAF8",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

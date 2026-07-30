@@ -1,0 +1,27 @@
+---
+/**
+ * The brand mark: a flat gift box, drawn inline as SVG at icon scale.
+ *
+ * It uses the theme tokens rather than fixed hex values, so it follows the
+ * palette wherever it is placed. `size` scales both dimensions; the viewBox is
+ * square so it never distorts.
+ */
+interface Props {
+  size?: number;
+}
+const { size = 22 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 22 22"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <rect x="1.5" y="7" width="19" height="13.5" rx="2" fill="var(--color-pine)"></rect>
+  <rect x="9" y="7" width="4" height="13.5" fill="var(--color-paper)" opacity="0.92"></rect>
+  <path d="M11 7C11 7 7 1.5 4.6 3.2 2.6 4.6 5.4 7 11 7Z" fill="var(--color-pine)"></path>
+  <path d="M11 7C11 7 15 1.5 17.4 3.2 19.4 4.6 16.6 7 11 7Z" fill="var(--color-pine)"></path>
+</svg>

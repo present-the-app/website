@@ -1,0 +1,172 @@
+---
+import { site } from "../config/site";
+import type { Locale } from "../config/site";
+import { t, localeFromPath, localePath, otherLocales } from "../i18n";
+import Wordmark from "./Wordmark.astro";
+
+interface Props {
+  alts: Record<Locale, string>;
+}
+const { alts } = Astro.props;
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+const home = localePath(locale, "/");
+
+// A link that lands on the page you are already reading is not a switcher.
+// The all-languages /thanks/ page is the case that hits this.
+const switchers = otherLocales(locale)
+  .map((l) => ({ locale: l, href: alts[l] }))
+  .filter((x) => x.href !== Astro.url.pathname);
+---
+
+<nav class="nav">
+  <div class="u-wrap nav__in">
+    <a class="nav__brand" href={home}>
+      <Wordmark />
+      <span>{site.name}</span>
+    </a>
+
+    {/* An explicit spacer, so alignment survives any right-hand item being
+        conditionally absent. */}
+    <div class="nav__spacer"></div>
+
+    <div class="nav__links">
+      <a href={`${home}#how`}>{s.nav.howItWorks}</a>
+      <a href={`${home}#wishlists`}>{s.nav.wishlists}</a>
+      <a href={`${home}#faq`}>{s.nav.faq}</a>
+    </div>
+
+    {
+      switchers.length > 0 && (
+        <div class="nav__langs">
+          {switchers.map((x) => (
+            <a class="nav__lang" href={x.href} hreflang={x.locale} lang={x.locale}>
+              {x.locale.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      /* One ternary rather than two parallel components: only the href and the
+         label differ between the two states of `site.appUrl`. */
+      site.appUrl ? (
+        <a class="u-btn nav__cta" href={site.appUrl}>
+          {s.nav.openApp}
+        </a>
+      ) : (
+        /* Absolute, not a bare "#waitlist": the anchor only exists on the home
+           page, so on every other route the fragment alone goes nowhere. */
+        <a class="u-btn nav__cta" href={`${home}#waitlist`}>
+          {s.nav.cta}
+        </a>
+      )
+    }
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .nav__in {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    height: 66px;
+  }
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .nav__spacer {
+    flex: 1 1 auto;
+  }
+  .nav__links {
+    display: flex;
+    gap: 26px;
+    font-size: 15px;
+  }
+  .nav__links a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .nav__links a:hover {
+    color: var(--color-ink);
+  }
+  .nav__langs {
+    display: flex;
+    gap: 6px;
+  }
+  .nav__lang {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 5px 11px;
+  }
+  .nav__lang:hover {
+    color: var(--color-ink);
+    border-color: var(--color-faint);
+  }
+  .nav__cta {
+    font-size: 15px;
+    padding: 9px 16px;
+  }
+
+  @media (max-width: 860px) {
+    .nav__links {
+      display: none;
+    }
+  }
+  /* Three locales means two language pills, and German runs long: "Auf die
+     Warteliste" beside them overflowed a 390px viewport. Everything in the bar
+     shrinks together rather than any one item being dropped, because the
+     language switcher is not optional on a trilingual Swiss site. */
+  @media (max-width: 560px) {
+    .nav__in {
+      gap: 10px;
+      padding-inline: 16px;
+    }
+    .nav__brand {
+      font-size: 18px;
+      gap: 7px;
+    }
+    .nav__langs {
+      gap: 4px;
+    }
+    .nav__lang {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+    .nav__cta {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+  }
+
+  /* The wordmark stays until it genuinely cannot fit. Dropping it at common
+     phone widths costs the only brand recognition the nav has. */
+  @media (max-width: 360px) {
+    .nav__brand span {
+      display: none;
+    }
+  }
+</style>

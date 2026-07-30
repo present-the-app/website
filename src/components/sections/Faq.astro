@@ -1,0 +1,91 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+
+/**
+ * FAQPage structured data. This is the one schema type on the site that is
+ * both valid and honest for a pre-launch product: it needs no price, no rating
+ * and no reviews, only questions that are genuinely answered on the page.
+ */
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: s.faq.items.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+---
+
+<Section id="faq" eyebrow={s.faq.eyebrow} title={s.faq.title}>
+  <div class="list">
+    {
+      s.faq.items.map((item, i) => (
+        <details class="qa" name="faq" open={i === 0}>
+          <summary class="qa__q">
+            <span>{item.q}</span>
+            <svg class="qa__i" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+              <path
+                d="M1 4.5 7 10l6-5.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </summary>
+          <p class="qa__a">{item.a}</p>
+        </details>
+      ))
+    }
+  </div>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</Section>
+
+<style>
+  .list {
+    margin-top: 42px;
+    max-width: 74ch;
+    border-top: 1px solid var(--color-border);
+  }
+  .qa {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .qa__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 19px 2px;
+    cursor: pointer;
+    font-size: 17.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    list-style: none;
+  }
+  .qa__q::-webkit-details-marker {
+    display: none;
+  }
+  .qa__q:hover {
+    color: var(--color-pine);
+  }
+  .qa__i {
+    flex: none;
+    color: var(--color-faint);
+    transition: transform 160ms ease-out;
+  }
+  .qa[open] .qa__i {
+    transform: rotate(180deg);
+  }
+  .qa__a {
+    margin: 0;
+    padding: 0 2px 22px;
+    color: var(--color-muted);
+    font-size: 16px;
+    max-width: 66ch;
+  }
+</style>

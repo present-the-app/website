@@ -1,0 +1,110 @@
+---
+import { site } from "../config/site";
+import { t, localeFromPath } from "../i18n";
+
+interface Props {
+  id?: string;
+  /** Shown under the field. Off in the footer, where it would be noise. */
+  showMicrocopy?: boolean;
+}
+const { id = "waitlist-email", showMicrocopy = true } = Astro.props;
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+
+/**
+ * A plain form POST, on purpose.
+ *
+ * It is a top-level navigation rather than an XHR, so CORS never applies and it
+ * works with JavaScript disabled. Converting this to fetch() would reintroduce
+ * both problems. It also keeps INP low, since no client-side handler runs on
+ * submit.
+ *
+ * The post-submit redirect is configured on the provider side rather than per
+ * form, so every language shares the one success page at /thanks/.
+ */
+const enabled = Boolean(site.waitlistEndpoint);
+---
+
+<form
+  class="wl"
+  action={site.waitlistEndpoint || undefined}
+  method="post"
+  target="_top"
+>
+  <div class="wl__row">
+    <label class="wl__label" for={id}>{s.waitlist.label}</label>
+    <input
+      class="u-field"
+      id={id}
+      type="email"
+      name="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder={s.waitlist.placeholder}
+      required
+      disabled={!enabled}
+    />
+    <button class="u-btn wl__submit" type="submit" disabled={!enabled}>
+      {s.waitlist.submit}
+    </button>
+  </div>
+
+  {/* Hidden field the form provider expects for embedded forms. */}
+  <input type="hidden" name="embed" value="1" />
+  <input type="hidden" name="tag" value="waitlist" />
+  {/* Recorded so the single shared success page can still be segmented later. */}
+  <input type="hidden" name="metadata__lang" value={locale} />
+
+  {
+    showMicrocopy && (
+      <p class="wl__micro">
+        {enabled ? s.waitlist.microcopy : s.waitlist.disabled}
+      </p>
+    )
+  }
+</form>
+
+<style>
+  .wl {
+    max-width: 480px;
+  }
+  .wl__row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .wl__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .wl__row :global(.u-field) {
+    flex: 1 1 230px;
+    width: auto;
+  }
+  .wl__submit {
+    flex: 0 0 auto;
+  }
+  .wl__submit:disabled,
+  .wl :global(.u-field:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .wl__micro {
+    font-size: 14px;
+    color: var(--color-faint);
+    margin: 13px 0 0;
+    max-width: 46ch;
+  }
+  @media (max-width: 460px) {
+    .wl__submit {
+      width: 100%;
+      /* Thumb reach: a full-width control at the bottom of the stack. */
+      min-height: 52px;
+    }
+  }
+</style>

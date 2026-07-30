@@ -1,0 +1,446 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import { IDEAS, SHOP_LABEL, shopUrl, RISK_TO_TRAIT } from "../../data/ideas";
+import Section from "../Section.astro";
+import WaitlistForm from "../WaitlistForm.astro";
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+const d = s.demo;
+
+/**
+ * Only what the client needs, in one language, flattened. Keeping the payload
+ * to the current locale roughly halves it, and the whole island stays well
+ * inside the page's JS budget.
+ */
+const payload = {
+  ideas: IDEAS.map((i) => ({
+    id: i.id,
+    interest: i.interest,
+    band: i.band,
+    traits: i.traits,
+    notFor: i.notFor ?? [],
+    name: i.name[locale],
+    why: i.why[locale],
+    price: i.price[locale],
+    shops: i.shops.map((sh) => ({
+      label: SHOP_LABEL[sh],
+      url: shopUrl(sh, i.query[locale], locale),
+    })),
+  })),
+  riskToTrait: RISK_TO_TRAIT,
+  labels: {
+    eyebrow: d.resultEyebrow,
+    why: d.why,
+    buyAt: d.buyAt,
+    reroll: d.reroll,
+    rerollsLeft: d.rerollsLeft,
+    restart: d.restart,
+    progress: d.progress,
+    gateTitle: d.gateTitle,
+    gateBody: d.gateBody,
+  },
+};
+---
+
+<Section id="demo" eyebrow={d.eyebrow} title={d.title}>
+  <p class="intro">{d.intro}</p>
+
+  <div class="demo" data-demo data-payload={JSON.stringify(payload)}>
+    <noscript>
+      <p class="noscript">{d.noJs}</p>
+    </noscript>
+
+    <div class="panel" data-panel hidden>
+      <div class="qs">
+        {
+          d.questions.map((q, qi) => (
+            <fieldset class="q" data-q={q.id} data-index={qi} hidden>
+              <legend class="q__prompt">{q.prompt}</legend>
+              <div class="q__opts">
+                {q.options.map((o) => (
+                  <button
+                    class="opt"
+                    type="button"
+                    data-value={o.id}
+                    data-question={q.id}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          ))
+        }
+      </div>
+
+      <div class="foot">
+        <p class="progress" data-progress aria-live="polite"></p>
+        <button class="back" type="button" data-back hidden>{d.back}</button>
+      </div>
+
+      {/* Result and gate are built by the script from the payload above. */}
+      <div class="result" data-result hidden></div>
+
+      <div class="gate" data-gate hidden>
+        <h3 class="u-display-sm gate__t">{d.gateTitle}</h3>
+        <p class="gate__b">{d.gateBody}</p>
+        <WaitlistForm id="demo-email" />
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .intro {
+    font-size: 18px;
+    color: var(--color-muted);
+    max-width: 54ch;
+    margin: 22px 0 0;
+  }
+  .demo {
+    margin-top: 40px;
+    max-width: 720px;
+  }
+  .noscript,
+  .panel {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    padding: 28px 26px;
+  }
+  .noscript {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 15px;
+  }
+
+  .q {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .q__prompt {
+    padding: 0;
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 600;
+    font-size: clamp(21px, 2.4vw, 27px);
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    margin-bottom: 22px;
+    max-width: 24ch;
+  }
+  .q__opts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  /* Soft accent means "chosen"; these are not yet chosen, so they stay neutral
+     until pressed. Weight, not hue, separates state from action. */
+  .opt {
+    font: inherit;
+    font-size: 15.5px;
+    text-align: left;
+    padding: 14px 16px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+      border-color 140ms ease-out,
+      background 140ms ease-out;
+  }
+  .opt:hover {
+    border-color: var(--color-pine);
+    background: var(--color-pine-soft);
+  }
+  .opt[aria-pressed="true"] {
+    border-color: var(--color-pine);
+    background: var(--color-pine-soft);
+    color: var(--color-pine-ink);
+    font-weight: 600;
+  }
+
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 22px;
+    min-height: 24px;
+  }
+  .progress {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-faint);
+    letter-spacing: 0.04em;
+  }
+  .back {
+    font: inherit;
+    font-size: 14px;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--color-muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .back:hover {
+    color: var(--color-ink);
+  }
+
+  .result :global(.rcard) {
+    background: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    padding: 26px 24px 22px;
+  }
+  .result :global(.rcard__eyebrow) {
+    color: var(--color-pine);
+    margin: 0 0 12px;
+  }
+  .result :global(.rcard__name) {
+    font-size: clamp(23px, 2.6vw, 30px);
+    margin: 0 0 10px;
+  }
+  .result :global(.rcard__why) {
+    font-size: 15.5px;
+    color: var(--color-muted);
+    margin: 0 0 16px;
+  }
+  .result :global(.rcard__price) {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+  .result :global(.rcard__shops) {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .result :global(.rcard__foot) {
+    border-top: 1px solid var(--color-border);
+    padding-top: 15px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .result :global(.rcard__reroll) {
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-pine);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .result :global(.rcard__note),
+  .result :global(.rcard__rest) {
+    font-size: 13px;
+    color: var(--color-faint);
+  }
+
+  .gate {
+    margin-top: 26px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 24px;
+  }
+  .gate__t {
+    font-size: 22px;
+    margin: 0 0 10px;
+  }
+  .gate__b {
+    color: var(--color-muted);
+    font-size: 15.5px;
+    margin: 0 0 20px;
+    max-width: 56ch;
+  }
+</style>
+
+<script>
+  type Trait = string;
+  interface Idea {
+    id: string;
+    interest: string;
+    band: string;
+    traits: Trait[];
+    notFor: string[];
+    name: string;
+    why: string;
+    price: string;
+    shops: { label: string; url: string }[];
+  }
+
+  const root = document.querySelector<HTMLElement>("[data-demo]");
+  if (root) {
+    const payload = JSON.parse(root.dataset.payload || "{}") as {
+      ideas: Idea[];
+      riskToTrait: Record<string, Trait>;
+      labels: Record<string, string>;
+    };
+    const L = payload.labels;
+
+    const panel = root.querySelector<HTMLElement>("[data-panel]")!;
+    const questions = Array.from(root.querySelectorAll<HTMLElement>("[data-q]"));
+    const progressEl = root.querySelector<HTMLElement>("[data-progress]")!;
+    const backBtn = root.querySelector<HTMLButtonElement>("[data-back]")!;
+    const resultEl = root.querySelector<HTMLElement>("[data-result]")!;
+    const gateEl = root.querySelector<HTMLElement>("[data-gate]")!;
+
+    // Only reveal the interactive panel once the script is running, so a
+    // failed bundle shows the <noscript> message instead of a dead widget.
+    panel.hidden = false;
+
+    const answers: Record<string, string> = {};
+    let step = 0;
+    let offset = 0;
+    /**
+     * Ideas shown across the whole visit, not per run. Changing an answer
+     * resets the pool but must not hand out a fresh allowance: otherwise Back
+     * plus a re-pick loops forever and the gate never appears.
+     */
+    const MAX_IDEAS = 3;
+    let seen = 0;
+
+    const fill = (tpl: string, v: Record<string, string | number>) =>
+      tpl.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? `{${k}}`));
+
+    function ranked(): Idea[] {
+      const wanted = payload.riskToTrait[answers.risk];
+      const pool = payload.ideas
+        .filter((i) => i.interest === answers.interest)
+        .filter((i) => !(answers.who && i.notFor.includes(answers.who)));
+      const score = (i: Idea) => (wanted && i.traits.includes(wanted) ? 0 : 1);
+      const byTrait = (a: Idea, b: Idea) => score(a) - score(b);
+      return [
+        ...pool.filter((i) => i.band === answers.budget).sort(byTrait),
+        ...pool.filter((i) => i.band !== answers.budget).sort(byTrait),
+      ];
+    }
+
+    function esc(str: string) {
+      const el = document.createElement("span");
+      el.textContent = str;
+      return el.innerHTML;
+    }
+
+    function renderResult() {
+      const list = ranked();
+      if (!list.length) return;
+      const idea = list[offset % list.length];
+      seen += 1;
+      const left = MAX_IDEAS - seen;
+
+      resultEl.innerHTML = `
+        <article class="rcard">
+          <p class="u-eyebrow rcard__eyebrow">${esc(L.eyebrow)}</p>
+          <h3 class="u-display-sm rcard__name">${esc(idea.name)}</h3>
+          <p class="rcard__why">${esc(idea.why)}</p>
+          <p class="rcard__price">${esc(idea.price)}</p>
+          <div class="rcard__shops">
+            ${idea.shops
+              .map(
+                (sh) =>
+                  `<a class="u-btn-soft" href="${sh.url}" target="_blank" rel="noopener noreferrer">${esc(sh.label)}</a>`,
+              )
+              .join("")}
+          </div>
+          <div class="rcard__foot">
+            ${
+              left > 0
+                ? `<button class="rcard__reroll" type="button" data-reroll>${esc(L.reroll)}</button>
+                   <span class="rcard__note">${esc(fill(L.rerollsLeft, { n: left }))}</span>`
+                : `<button class="rcard__reroll" type="button" data-restart>${esc(L.restart)}</button>`
+            }
+          </div>
+        </article>`;
+      resultEl.hidden = false;
+
+      if (seen >= MAX_IDEAS) gateEl.hidden = false;
+
+      resultEl
+        .querySelector<HTMLButtonElement>("[data-reroll]")
+        ?.addEventListener("click", () => {
+          offset += 1;
+          renderResult();
+        });
+
+      // Was a bare <span> labelled with an action and wired to nothing.
+      resultEl
+        .querySelector<HTMLButtonElement>("[data-restart]")
+        ?.addEventListener("click", () => {
+          step = 0;
+          offset = 0;
+          panel
+            .querySelectorAll<HTMLButtonElement>(".opt")
+            .forEach((b) => b.setAttribute("aria-pressed", "false"));
+          show();
+          panel.scrollIntoView({
+            block: "start",
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          });
+        });
+    }
+
+    function show() {
+      questions.forEach((q, i) => {
+        q.hidden = i !== step;
+      });
+      const done = step >= questions.length;
+      progressEl.textContent = done
+        ? ""
+        : fill(L.progress, { n: step + 1, total: questions.length });
+      backBtn.hidden = step === 0 || done;
+
+      if (done) {
+        renderResult();
+      } else {
+        resultEl.hidden = true;
+        gateEl.hidden = true;
+      }
+    }
+
+    root.querySelectorAll<HTMLButtonElement>(".opt").forEach((btn) => {
+      btn.setAttribute("aria-pressed", "false");
+      btn.addEventListener("click", () => {
+        const q = btn.dataset.question!;
+        answers[q] = btn.dataset.value!;
+
+        root
+          .querySelectorAll<HTMLButtonElement>(`.opt[data-question="${q}"]`)
+          .forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+
+        // `seen` deliberately survives this: a different answer gives a new
+        // pool, not a new allowance.
+        offset = 0;
+        step = Math.min(step + 1, questions.length);
+        show();
+
+        if (step >= questions.length) {
+          resultEl.querySelector("h3")?.scrollIntoView({
+            block: "nearest",
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          });
+        }
+      });
+    });
+
+    backBtn.addEventListener("click", () => {
+      step = Math.max(0, step - 1);
+      show();
+    });
+
+    show();
+  }
+</script>

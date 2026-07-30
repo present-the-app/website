@@ -1,0 +1,85 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+---
+
+<Section tone="surface" eyebrow={s.calendar.eyebrow} title={s.calendar.title}>
+  <div class="grid">
+    <div>
+      <p class="body">{s.calendar.body}</p>
+      <p class="note">{s.calendar.note}</p>
+    </div>
+
+    <div class="card" aria-hidden="true">
+      {
+        s.calendar.entries.map((e, i) => (
+          <div class:list={["row", i === s.calendar.entries.length - 1 && "row--soon"]}>
+            <span class="row__name">{e.name}</span>
+            <span class="row__when">{e.when}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr);
+    gap: 52px;
+    align-items: center;
+    margin-top: 30px;
+  }
+  .body {
+    font-size: 18px;
+    color: var(--color-muted);
+    max-width: 50ch;
+    margin: 0;
+  }
+  .note {
+    font-size: 14.5px;
+    color: var(--color-faint);
+    margin: 18px 0 0;
+    max-width: 50ch;
+  }
+  .card {
+    background: var(--color-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 15.5px;
+    flex-wrap: wrap;
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .row__when {
+    color: var(--color-faint);
+    font-size: 13.5px;
+    align-self: center;
+  }
+  .row--soon {
+    background: var(--color-pine-soft);
+  }
+  .row--soon .row__when {
+    color: var(--color-pine-ink);
+    font-weight: 600;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+  }
+</style>

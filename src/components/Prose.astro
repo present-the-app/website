@@ -1,0 +1,80 @@
+---
+interface Props {
+  title: string;
+  updated?: string;
+  intro?: string;
+}
+const { title, updated, intro } = Astro.props;
+---
+
+<div class="u-wrap page">
+  <h1 class="u-display h1">{title}</h1>
+  {updated && <p class="updated">{updated}</p>}
+  {intro && <p class="intro">{intro}</p>}
+  <div class="prose">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .page {
+    padding-block: 84px 100px;
+    max-width: 720px;
+  }
+  .h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    margin: 0 0 14px;
+  }
+  .updated {
+    font-size: 14px;
+    color: var(--color-faint);
+    margin: 0 0 20px;
+  }
+  .intro {
+    font-size: 18px;
+    color: var(--color-muted);
+    margin: 0 0 40px;
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    margin: 44px 0 12px;
+  }
+  .prose :global(h3) {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 28px 0 8px;
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    color: var(--color-muted);
+    font-size: 16.5px;
+    max-width: 68ch;
+  }
+  .prose :global(p) {
+    margin: 0 0 16px;
+  }
+  .prose :global(ul) {
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+  .prose :global(li) {
+    margin-bottom: 8px;
+  }
+  .prose :global(a) {
+    color: var(--color-pine);
+    text-underline-offset: 3px;
+  }
+  .prose :global(strong) {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 40px 0;
+  }
+</style>

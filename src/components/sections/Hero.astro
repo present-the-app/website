@@ -1,0 +1,244 @@
+---
+import { site } from "../../config/site";
+import { t, localeFromPath } from "../../i18n";
+import WaitlistForm from "../WaitlistForm.astro";
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+
+// The seasonal variant is selected by a single value in the site config.
+const headline =
+  site.occasion === "christmas"
+    ? s.hero.headlineChristmas
+    : site.occasion === "valentines"
+      ? s.hero.headlineValentines
+      : s.hero.headline;
+
+const sub = site.occasion === "christmas" ? s.hero.subChristmas : s.hero.sub;
+---
+
+<header class="hero" id="waitlist">
+  <div class="u-wrap hero__in">
+    <div class="u-rise">
+      <h1 class="u-display hero__h1">{headline}</h1>
+      <p class="hero__sub">{sub}</p>
+
+      <WaitlistForm id="hero-email" />
+
+      <p class="hero__reassure">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M8 1.5 13.5 4v4c0 3.2-2.2 5.6-5.5 6.5C4.7 13.6 2.5 11.2 2.5 8V4L8 1.5Z"
+            stroke="var(--color-pine)"
+            stroke-width="1.4"
+            stroke-linejoin="round"></path>
+        </svg>
+        {s.waitlist.reassurance}
+      </p>
+    </div>
+
+    {/*
+      Decorative illustration, hence aria-hidden: the tinted ghost cards sit
+      behind the ink-bordered pick, which carries the pine accent.
+    */}
+    <div class="stack u-rise" aria-hidden="true">
+      {
+        s.hero.discarded.map((d, i) => (
+          <div class={`ghost ghost--${i + 1}`}>
+            <span>{d.name}</span>
+            <span class="ghost__price">{d.price}</span>
+          </div>
+        ))
+      }
+
+      <article class="pick">
+        <p class="u-eyebrow pick__eyebrow">{s.hero.ourPick}</p>
+        <h2 class="u-display-sm pick__name">{s.hero.pickName}</h2>
+        <p class="pick__why">{s.hero.pickWhy}</p>
+        <p class="pick__price">
+          <b>{s.hero.pickPrice}</b>
+          <em>&middot; {s.hero.pickPriceNote}</em>
+        </p>
+        <div class="pick__shops">
+          <span class="u-btn-soft">Galaxus</span>
+          <span class="u-btn-soft">Digitec</span>
+          <span class="u-btn-soft">Manor</span>
+        </div>
+        <div class="pick__reject">
+          <span class="u-link">{s.hero.notThisOne}</span>
+          <small>{s.hero.notThisOneNote}</small>
+        </div>
+      </article>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero {
+    overflow: hidden;
+  }
+  .hero__in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+    gap: 56px;
+    align-items: center;
+    padding-block: 104px 96px;
+  }
+  .hero__h1 {
+    /* Sized so it sets as two lines at desktop widths. The weight-only font
+       subset has no width axis, so it runs wider than a condensed setting. */
+    font-size: clamp(42px, 5.2vw, 70px);
+    margin: 0 0 22px;
+    max-width: 16ch;
+  }
+  .hero__sub {
+    font-size: clamp(17px, 1.35vw, 20px);
+    color: var(--color-muted);
+    margin: 0 0 32px;
+    max-width: 46ch;
+  }
+  .hero__reassure {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--color-muted);
+    margin: 18px 0 0;
+  }
+  .hero__reassure svg {
+    flex: none;
+  }
+
+  .stack {
+    position: relative;
+    margin-right: -104px;
+    padding-block: 52px;
+  }
+  .ghost {
+    position: absolute;
+    width: 236px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    font-size: 14px;
+    color: var(--color-faint);
+  }
+  .ghost span {
+    display: block;
+  }
+  .ghost__price {
+    margin-top: 5px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+  .ghost--1 {
+    top: 6px;
+    left: 4px;
+    transform: rotate(-6deg);
+    background: color-mix(in srgb, var(--color-paperblue) 9%, var(--color-paper));
+    border-color: color-mix(in srgb, var(--color-paperblue) 24%, var(--color-border));
+  }
+  .ghost--2 {
+    top: 96px;
+    left: 30px;
+    transform: rotate(2.5deg);
+    background: color-mix(in srgb, var(--color-ochre) 12%, var(--color-paper));
+    border-color: color-mix(in srgb, var(--color-ochre) 28%, var(--color-border));
+  }
+  .ghost--3 {
+    top: 190px;
+    left: 10px;
+    transform: rotate(-2.5deg);
+    background: color-mix(in srgb, var(--color-ribbon) 8%, var(--color-paper));
+    border-color: color-mix(in srgb, var(--color-ribbon) 22%, var(--color-border));
+  }
+
+  .pick {
+    position: relative;
+    width: min(420px, 100%);
+    margin-left: auto;
+    padding: 26px 26px 22px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-card);
+  }
+  .pick__eyebrow {
+    color: var(--color-pine);
+    margin: 0 0 14px;
+  }
+  .pick__name {
+    font-size: 27px;
+    margin: 0 0 10px;
+  }
+  .pick__why {
+    font-size: 15px;
+    color: var(--color-muted);
+    margin: 0 0 18px;
+  }
+  .pick__price {
+    font-size: 15px;
+    margin: 0 0 20px;
+  }
+  .pick__price b {
+    font-weight: 600;
+  }
+  .pick__price em {
+    font-style: normal;
+    color: var(--color-faint);
+  }
+  .pick__shops {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .pick__reject {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--color-border);
+    padding-top: 15px;
+  }
+  .pick__reject small {
+    font-size: 13px;
+    color: var(--color-faint);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stack {
+      animation-delay: 90ms;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr;
+      gap: 46px;
+      padding-block: 60px 64px;
+    }
+    .hero__h1 {
+      max-width: none;
+    }
+    .stack {
+      margin-right: -24px;
+      padding: 78px 0 0;
+    }
+    .pick {
+      margin-left: 0;
+    }
+    .ghost--1 {
+      top: 0;
+      left: auto;
+      right: 18px;
+    }
+    .ghost--2 {
+      top: 38px;
+      left: 0;
+    }
+    .ghost--3 {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+import Base from "../layouts/Base.astro";
+import Prose from "../components/Prose.astro";
+import { site } from "../config/site";
+
+/**
+ * This page describes THIS WEBSITE only, and every statement in it is checkable
+ * against this repository. The app has its own separate notice; do not describe
+ * app behaviour here.
+ */
+const UPDATED = "30 July 2026";
+---
+
+<Base title="Privacy" description="What this website collects, which is almost nothing.">
+  <Prose
+    title="Privacy"
+    updated={`Last updated ${UPDATED}`}
+    intro="This page is about this website. The app will have its own notice, published before it opens."
+  >
+    <h2>The short version</h2>
+    <p>
+      This site sets no cookies, runs no analytics and embeds no trackers. If you
+      join the waitlist we store your email address, and nothing else. If you use
+      the contact form we receive what you type into it.
+    </p>
+
+    <h2>The waitlist</h2>
+    <p>
+      Joining the waitlist sends your email address to <strong>Buttondown</strong>,
+      the service that stores the list and sends the messages. We ask for nothing
+      but the address, and we record which language version of the page you signed
+      up from so we can write to you in the right one.
+    </p>
+    <p>
+      It is double opt-in: you will get a confirmation link, and you are only on
+      the list once you open it. Every email has an unsubscribe link, and using it
+      removes you from the list entirely. You can also write to us and ask.
+    </p>
+    <p>
+      We will use the list to tell you when the app opens. We will not sell it,
+      rent it, or hand it to anyone else for their own use.
+    </p>
+
+    <h2>The demo on the front page</h2>
+    <p>
+      The four-question demo runs entirely inside your browser. Your answers are
+      never sent anywhere, are not stored, and are gone when you close the tab.
+      There is no model and no server call behind it: it is a hand-written list.
+    </p>
+
+    <h2>The contact form</h2>
+    <p>
+      If the contact form is connected, submissions go through <strong>Formspree</strong>,
+      which forwards them to us by email. If it is not connected, the page shows
+      an address instead and nothing passes through a third party at all. Either
+      way we keep what you send us for as long as it takes to deal with it.
+    </p>
+
+    <h2>Hosting and server logs</h2>
+    <p>
+      The site is static and hosted on <strong>GitHub Pages</strong>. GitHub
+      processes requests to serve the pages and may log technical information such
+      as IP addresses as part of running the service. We do not have access to
+      those logs and cannot use them to identify you.
+    </p>
+
+    <h2>Age</h2>
+    <p>
+      This site is not aimed at children under 13, and the app it advertises is
+      rated 13 and over. Please do not join the waitlist if you are under 13. If
+      you believe a child has given us an address, write to us and we will remove
+      it.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask what we hold about you, ask for it to be corrected, or ask for
+      it to be deleted. For the waitlist that is one address, and we
+      delete it and it is gone from the list. Write to <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      If this changes in a way that matters, the date at the top changes with it,
+      and anyone on the waitlist gets told.
+    </p>
+  </Prose>
+</Base>

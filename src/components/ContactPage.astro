@@ -1,0 +1,165 @@
+---
+import { site } from "../config/site";
+import { t, localeFromPath } from "../i18n";
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = t(locale);
+const c = s.contact;
+
+const enabled = Boolean(site.contactEndpoint);
+---
+
+<div class="u-wrap page">
+  <h1 class="u-display h1">{c.title}</h1>
+  <p class="intro">{c.intro}</p>
+
+  {
+    enabled ? (
+      /* Plain POST, same reasoning as the waitlist: a top-level navigation
+         works without JavaScript and never touches CORS. */
+      <form class="form" action={site.contactEndpoint} method="post">
+        <div class="row">
+          <label class="lbl" for="c-name">
+            {c.name}
+          </label>
+          <input
+            class="u-field"
+            id="c-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            placeholder={c.namePlaceholder}
+            required
+          />
+        </div>
+        <div class="row">
+          <label class="lbl" for="c-email">
+            {c.email}
+          </label>
+          <input
+            class="u-field"
+            id="c-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder={c.emailPlaceholder}
+            required
+          />
+        </div>
+        <div class="row">
+          <label class="lbl" for="c-msg">
+            {c.message}
+          </label>
+          <textarea
+            class="u-field area"
+            id="c-msg"
+            name="message"
+            rows="6"
+            placeholder={c.messagePlaceholder}
+            required
+          />
+        </div>
+        <input type="hidden" name="_language" value={locale} />
+        <input type="hidden" name="_subject" value={`Contact via ${site.name} (${locale})`} />
+        {/*
+          Honeypot. Bots fill every field they find; people never see this one,
+          so anything arriving with it set is discarded rather than counted.
+          aria-hidden and tabindex keep it away from screen readers and tabbing.
+        */}
+        <div class="hp" aria-hidden="true">
+          <label for="c-website">Leave this field empty</label>
+          <input id="c-website" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+        </div>
+        <button class="u-btn" type="submit">
+          {c.submit}
+        </button>
+      </form>
+    ) : (
+      /* No endpoint configured, so no form. A form that silently goes nowhere
+         is worse than an address. */
+      <div class="fallback">
+        <h2 class="fallback__t">{c.fallbackTitle}</h2>
+        <p class="fallback__b">{c.fallbackBody}</p>
+        <a class="u-btn" href={`mailto:${site.contactEmail}`}>
+          {site.contactEmail}
+        </a>
+      </div>
+    )
+  }
+
+  {
+    enabled && (
+      <p class="alt">
+        {c.fallbackTitle}:{" "}
+        <a class="u-link" href={`mailto:${site.contactEmail}`}>
+          {site.contactEmail}
+        </a>
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .page {
+    padding-block: 84px 100px;
+    max-width: 700px;
+  }
+  .h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    margin: 0 0 18px;
+  }
+  .intro {
+    font-size: 18px;
+    color: var(--color-muted);
+    margin: 0 0 40px;
+    max-width: 54ch;
+  }
+  .form {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .row {
+    display: grid;
+    gap: 7px;
+    width: 100%;
+  }
+  .lbl {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .area {
+    resize: vertical;
+    min-height: 130px;
+    font-family: inherit;
+  }
+  /* Off-screen rather than display:none, which some bots detect and skip. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .fallback {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    padding: 26px 24px;
+  }
+  .fallback__t {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .fallback__b {
+    color: var(--color-muted);
+    font-size: 15.5px;
+    margin: 0 0 20px;
+  }
+  .alt {
+    margin: 30px 0 0;
+    font-size: 15px;
+    color: var(--color-muted);
+  }
+</style>

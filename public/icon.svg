@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- A lighter green on dark tabs; the default sits too dark against them. -->
+  <style>
+    .bg { fill: #FBFAF8 }
+    .fg { fill: #15703F }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #141614 }
+      .fg { fill: #4CAE78 }
+    }
+  </style>
+  <rect class="bg" width="64" height="64" rx="14"/>
+  <g transform="translate(32 33) scale(2.05) translate(-11 -11)">
+    <rect class="fg" x="1.5" y="7" width="19" height="13.5" rx="2"/>
+    <rect class="bg" x="9" y="7" width="4" height="13.5"/>
+    <path class="fg" d="M11 7C11 7 7 1.5 4.6 3.2 2.6 4.6 5.4 7 11 7Z"/>
+    <path class="fg" d="M11 7C11 7 15 1.5 17.4 3.2 19.4 4.6 16.6 7 11 7Z"/>
+  </g>
+</svg>

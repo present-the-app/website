@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import Prose from "../../../components/Prose.astro";
+import { fr } from "../../../i18n/fr";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+  return posts
+    .filter((p) => p.data.lang === "fr")
+    .map((post) => {
+      const sibling = posts.find(
+        (p) => p.data.lang === "en" && p.data.translationKey === post.data.translationKey,
+      );
+      return {
+        params: { slug: post.id.split("/").pop()! },
+        props: { post, enSlug: sibling?.id.split("/").pop() ?? null },
+      };
+    });
+}
+
+const { post, enSlug } = Astro.props;
+const { Content } = await render(post);
+
+const altPaths = { en: enSlug ? `/writing/${enSlug}/` : "/writing/" };
+
+const df = new Intl.DateTimeFormat("fr-CH", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  altPaths={altPaths}
+>
+  <Prose
+    title={post.data.title}
+    updated={`${fr.blog.published} ${df.format(post.data.pubDate)}`}
+  >
+    <Content />
+  </Prose>
+</Base>

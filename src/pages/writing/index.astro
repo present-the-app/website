@@ -1,0 +1,9 @@
+---
+import Base from "../../layouts/Base.astro";
+import BlogList from "../../components/BlogList.astro";
+import { en } from "../../i18n/en";
+---
+
+<Base title={en.blog.title} description={en.blog.intro}>
+  <BlogList />
+</Base>

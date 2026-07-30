@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+/**
+ * Self-hosted, weight-axis only.
+ *
+ * Fontsource ships one file per axis. Bricolage's multi-axis "standard" build
+ * is 131KB for latin alone versus 41KB for weight-only, which is not worth a
+ * width axis on a marketing page. Each file carries a `unicode-range`, so the
+ * Vietnamese subset is never fetched for English or French, and latin-ext is
+ * fetched only when accented characters actually appear, which they do on
+ * every French page.
+ */
+@import "@fontsource-variable/bricolage-grotesque/wght.css";
+@import "@fontsource-variable/instrument-sans/wght.css";
+
+/**
+ * Design tokens: "warm paper".
+ *
+ * This block is the only place a colour is written down. Everything else
+ * references a token.
+ *
+ * ─── The rule that governs colour use ───
+ *
+ * PINE is the only colour permitted to touch an interactive element: buttons,
+ * links, focus rings, selected states. One accent, site-wide.
+ *
+ * The DECORATIVE palette (ribbon / ochre / paper-blue) may tint illustration
+ * and section washes. It may NEVER be a control, a link, or a state.
+ *
+ * Hex values are converted to OKLCH so that hover/border variants can be
+ * derived by nudging lightness alone, and so opacity modifiers interpolate in
+ * the same space as Tailwind's own palette. Chroma is kept to 4 decimals:
+ * --color-paper sits at 0.0029 and rounds to a flat grey if truncated.
+ */
+@theme {
+  /* surfaces */
+  --color-paper: oklch(98.53% 0.0029 84.56); /* #FBFAF8 warm off-white */
+  --color-surface: oklch(95.35% 0.0043 84.57); /* #F2F0EC */
+
+  /* text */
+  --color-ink: oklch(21.78% 0 0); /* #1A1A1A */
+  --color-muted: oklch(48.06% 0.0024 106.6); /* #5F5F5C */
+
+  /**
+   * Value chosen for contrast, not for looks. The obvious lighter warm grey
+   * (#83837F) measures 3.65:1 on paper and 3.34:1 on surface: below the 4.5:1
+   * WCAG AA floor, and this token is used for real 13-14px microcopy (prices,
+   * form hints, captions), which gets no large-text exemption.
+   *
+   * Darkened to ~#6B6B69, keeping the same warm hue relationship. Solved
+   * against the WORST background it actually lands on, which is the tinted
+   * ghost card, not plain paper: 4.55:1 there, 4.65:1 on paper and surface.
+   */
+  --color-faint: oklch(52.8% 0.0027 106.6); /* ~#6B6B69 */
+  --color-border: oklch(91.13% 0.0059 76.4); /* #E4E1DB */
+
+  /* the one accent, interactive only */
+  --color-pine: oklch(48.19% 0.1132 153.87); /* #15703F */
+  --color-pine-pressed: oklch(40.71% 0.0985 154.4); /* #0F5730 */
+  --color-pine-soft: oklch(94.29% 0.0197 155.6); /* #E7F1EA */
+  --color-pine-ink: oklch(38.6% 0.0942 154.9); /* #0E4F2C */
+
+  /* decorative only, never on a control */
+  --color-ribbon: oklch(52.85% 0.1583 30.1); /* #C2402D */
+  --color-ochre: oklch(74.11% 0.1301 76.5); /* #D99A2B */
+  --color-paperblue: oklch(52.36% 0.0672 245.6); /* #4A6C8C */
+
+  --color-danger: oklch(45.79% 0.1743 27.6); /* #B3261E */
+
+  /* radii */
+  --radius-card: 12px;
+  --radius-btn: 14px;
+  --radius-input: 12px;
+
+  --font-display:
+    "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* The nav is sticky, so anchor jumps would otherwise land with the section
+       heading tucked underneath it. */
+    scroll-padding-top: 82px;
+  }
+
+  body {
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Focus is pine, and always visible. */
+  :focus-visible {
+    outline: 2px solid var(--color-pine);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-pine-soft);
+    color: var(--color-pine-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /**
+   * Display type. Bricolage Grotesque is variable on three axes; setting them
+   * explicitly is what stops it looking like every other grotesque.
+   */
+  .u-display {
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 620;
+    letter-spacing: -0.035em;
+    line-height: 0.99;
+    text-wrap: balance;
+  }
+
+  .u-display-sm {
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 600;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+
+  .u-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Solid pine = "this is THE action". At most one per screen: weight, not
+     hue, separates state from action. */
+  .u-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-pine);
+    color: #fff;
+    font-weight: 600;
+    border: 0;
+    border-radius: var(--radius-btn);
+    padding: 13px 22px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 140ms ease-out;
+  }
+  .u-btn:hover {
+    background: var(--color-pine-pressed);
+  }
+
+  /* Soft pine = "this is chosen / secondary", never competing with the above. */
+  .u-btn-soft {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-pine-soft);
+    color: var(--color-pine-ink);
+    border: 1px solid var(--color-pine);
+    border-radius: var(--radius-btn);
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 140ms ease-out;
+  }
+  .u-btn-soft:hover {
+    background: color-mix(in oklch, var(--color-pine) 14%, var(--color-paper));
+  }
+
+  .u-link {
+    color: var(--color-pine);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .u-link:hover {
+    color: var(--color-pine-pressed);
+  }
+
+  .u-field {
+    width: 100%;
+    font: inherit;
+    font-size: 16px; /* 16px or iOS Safari zooms on focus */
+    padding: 13px 15px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-input);
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .u-field::placeholder {
+    color: var(--color-faint);
+  }
+  .u-field:focus {
+    border-color: var(--color-pine);
+  }
+
+  .u-wrap {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  /* Entrance motion is opt-in, so reduced-motion users never see a flash of
+     animated content before a `reduce` override catches it. */
+  .u-rise {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .u-rise {
+      animation: u-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes u-rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+    }
+  }
+}

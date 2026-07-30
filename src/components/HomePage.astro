@@ -1,0 +1,32 @@
+---
+/**
+ * The landing page body, shared by every locale route.
+ *
+ * Each route renders this component; every string inside resolves from the
+ * URL's locale, so there is one structure and no duplicated markup to drift.
+ *
+ * The order of the sections below is the order they appear on the page. Change
+ * it here and it changes for all locales at once.
+ */
+import Hero from "./sections/Hero.astro";
+import DemoQuiz from "./sections/DemoQuiz.astro";
+import Problem from "./sections/Problem.astro";
+import OnePick from "./sections/OnePick.astro";
+import Wishlists from "./sections/Wishlists.astro";
+import How from "./sections/How.astro";
+import Calendar from "./sections/Calendar.astro";
+import Faq from "./sections/Faq.astro";
+import Limits from "./sections/Limits.astro";
+import FinalCta from "./sections/FinalCta.astro";
+---
+
+<Hero />
+<DemoQuiz />
+<Problem />
+<OnePick />
+<Wishlists />
+<How />
+<Calendar />
+<Faq />
+<Limits />
+<FinalCta />

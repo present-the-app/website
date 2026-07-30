@@ -1,0 +1,19 @@
+---
+import { t, localeFromPath } from "../../i18n";
+import Section from "../Section.astro";
+
+const s = t(localeFromPath(Astro.url.pathname));
+---
+
+<Section tone="surface" title={s.problem.title} statement>
+  <p class="body">{s.problem.body}</p>
+</Section>
+
+<style>
+  .body {
+    color: var(--color-muted);
+    max-width: 54ch;
+    margin: 24px 0 0;
+    font-size: 18px;
+  }
+</style>

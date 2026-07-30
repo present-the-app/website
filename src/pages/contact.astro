@@ -1,0 +1,9 @@
+---
+import Base from "../layouts/Base.astro";
+import ContactPage from "../components/ContactPage.astro";
+import { en } from "../i18n/en";
+---
+
+<Base title={en.contact.title} description={en.contact.intro}>
+  <ContactPage />
+</Base>

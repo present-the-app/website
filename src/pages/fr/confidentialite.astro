@@ -1,0 +1,90 @@
+---
+import Base from "../../layouts/Base.astro";
+import Prose from "../../components/Prose.astro";
+import { site } from "../../config/site";
+
+const UPDATED = "30 juillet 2026";
+---
+
+<Base
+  title="Confidentialité"
+  description="Ce que ce site collecte, c'est-à-dire presque rien."
+>
+  <Prose
+    title="Confidentialité"
+    updated={`Dernière mise à jour : ${UPDATED}`}
+    intro="Cette page concerne ce site. L'app aura sa propre note, publiée avant son ouverture."
+  >
+    <h2>En bref</h2>
+    <p>
+      Ce site ne dépose aucun cookie, n'utilise aucun outil de mesure d'audience et
+      n'intègre aucun traceur. Si tu rejoins la liste d'attente, on conserve ton
+      adresse e-mail, et rien d'autre. Si tu utilises le formulaire de contact, on
+      reçoit ce que tu y écris.
+    </p>
+
+    <h2>La liste d'attente</h2>
+    <p>
+      Rejoindre la liste envoie ton adresse e-mail à <strong>Buttondown</strong>, le
+      service qui héberge la liste et envoie les messages. On ne demande que
+      l'adresse, et on note depuis quelle version linguistique de la page tu t'es
+      inscrit, pour t'écrire dans la bonne langue.
+    </p>
+    <p>
+      C'est une double confirmation : tu reçois un lien, et tu n'es sur la liste
+      qu'une fois ce lien ouvert. Chaque e-mail contient un lien de
+      désinscription, qui te retire entièrement de la liste. Tu peux aussi
+      simplement nous écrire.
+    </p>
+    <p>
+      On utilisera la liste pour te dire quand l'app ouvre. On ne la vendra pas,
+      ne la louera pas et ne la transmettra à personne pour son propre usage.
+    </p>
+
+    <h2>La démo sur la page d'accueil</h2>
+    <p>
+      La démo en quatre questions tourne entièrement dans ton navigateur. Tes
+      réponses ne sont envoyées nulle part, ne sont pas conservées, et disparaissent
+      quand tu fermes l'onglet. Il n'y a ni modèle ni appel serveur derrière : c'est
+      une liste écrite à la main.
+    </p>
+
+    <h2>Le formulaire de contact</h2>
+    <p>
+      Si le formulaire de contact est branché, les messages passent par
+      <strong>Formspree</strong>, qui nous les transmet par e-mail. S'il ne l'est
+      pas, la page affiche une adresse et rien ne transite par un tiers. Dans les
+      deux cas, on garde ton message le temps de le traiter.
+    </p>
+
+    <h2>Hébergement et journaux</h2>
+    <p>
+      Le site est statique et hébergé sur <strong>GitHub Pages</strong>. GitHub
+      traite les requêtes pour servir les pages et peut enregistrer des informations
+      techniques, dont des adresses IP, dans le cadre de son service. Nous n'avons
+      pas accès à ces journaux et ne pouvons pas nous en servir pour t'identifier.
+    </p>
+
+    <h2>Âge</h2>
+    <p>
+      Ce site ne s'adresse pas aux enfants de moins de 13 ans, et l'app qu'il
+      présente est classée 13 ans et plus. Ne rejoins pas la liste si tu as moins de
+      13 ans. Si tu penses qu'un enfant nous a donné une adresse, écris-nous et on
+      la supprimera.
+    </p>
+
+    <h2>Tes droits</h2>
+    <p>
+      Tu peux demander ce qu'on détient à ton sujet, demander une correction ou une
+      suppression. Pour la liste d'attente, il s'agit d'une seule adresse : on la
+      supprime et elle ne figure plus sur la liste. Écris à
+      <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+    </p>
+
+    <h2>Modifications</h2>
+    <p>
+      Si quelque chose d'important change, la date en haut change aussi, et les
+      personnes inscrites sont prévenues.
+    </p>
+  </Prose>
+</Base>
