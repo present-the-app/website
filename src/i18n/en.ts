@@ -23,6 +23,7 @@ export const en = {
     faq: "Questions",
     cta: "Join the waitlist",
     openApp: "Open Present",
+    demo: "Demo",
     skipToContent: "Skip to content",
   },
 
@@ -48,6 +49,7 @@ export const en = {
   },
 
   waitlist: {
+    tryDemo: "Or try the demo",
     label: "Email address",
     placeholder: "you@example.com",
     submit: "Join the waitlist",

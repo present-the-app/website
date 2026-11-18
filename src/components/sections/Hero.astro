@@ -25,6 +25,15 @@ const sub = site.occasion === "christmas" ? s.hero.subChristmas : s.hero.sub;
 
       <WaitlistForm id="hero-email" />
 
+      {
+        site.betaUrl && !site.appUrl && (
+          <a class="hero__demo" href={site.betaUrl}>
+            {s.waitlist.tryDemo}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        )
+      }
+
       <p class="hero__reassure">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path
@@ -97,8 +106,23 @@ const sub = site.occasion === "christmas" ? s.hero.subChristmas : s.hero.sub;
     margin: 0 0 32px;
     max-width: 46ch;
   }
-  .hero__reassure {
+  .hero__demo {
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-pine);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .hero__demo:hover {
+    color: var(--color-pine-pressed);
+  }
+  .hero__reassure {
+    display: flex;
+    width: fit-content;
     align-items: center;
     gap: 8px;
     font-size: 14px;
