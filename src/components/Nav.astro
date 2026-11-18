@@ -50,6 +50,16 @@ const switchers = otherLocales(locale)
     }
 
     {
+      /* The beta, secondary to the waitlist: outlined, never solid pine. Hidden
+         once the app itself is the main CTA, since they would be the same link. */
+      site.betaUrl && !site.appUrl && (
+        <a class="nav__demo" href={site.betaUrl}>
+          {s.nav.demo}
+        </a>
+      )
+    }
+
+    {
       /* One ternary rather than two parallel components: only the href and the
          label differ between the two states of `site.appUrl`. */
       site.appUrl ? (
@@ -126,6 +136,20 @@ const switchers = otherLocales(locale)
     color: var(--color-ink);
     border-color: var(--color-faint);
   }
+  .nav__demo {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    padding: 8px 15px;
+    margin-right: -14px;
+  }
+  .nav__demo:hover {
+    border-color: var(--color-pine);
+    color: var(--color-pine);
+  }
   .nav__cta {
     font-size: 15px;
     padding: 9px 16px;
@@ -159,6 +183,11 @@ const switchers = otherLocales(locale)
     .nav__cta {
       font-size: 14px;
       padding: 8px 12px;
+    }
+    .nav__demo {
+      font-size: 14px;
+      padding: 7px 10px;
+      margin-right: 0;
     }
   }
 

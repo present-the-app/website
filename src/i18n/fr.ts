@@ -27,6 +27,7 @@ export const fr: Strings = {
     faq: "Questions",
     cta: "Rejoindre la liste",
     openApp: "Ouvrir Present",
+    demo: "Démo",
     skipToContent: "Aller au contenu",
   },
 
@@ -52,6 +53,7 @@ export const fr: Strings = {
   },
 
   waitlist: {
+    tryDemo: "Ou essaie la démo",
     label: "Adresse e-mail",
     placeholder: "toi@exemple.com",
     submit: "Rejoindre la liste",

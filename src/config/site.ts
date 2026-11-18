@@ -33,6 +33,13 @@ export const site = {
   appUrl: null as string | null,
 
   /**
+   * The closed beta of the app. Shown as a secondary "Demo" button beside the
+   * waitlist, never in place of it: the beta is invite-only, so visitors land on
+   * its request-access page. `null` hides the button everywhere.
+   */
+  betaUrl: "https://beta.present-the-app.com" as string | null,
+
+  /**
    * Waitlist form endpoint. Blank means the form still renders and validates,
    * it just has nowhere to post.
    *
