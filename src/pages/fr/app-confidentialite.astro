@@ -1,0 +1,148 @@
+---
+import Base from "../../layouts/Base.astro";
+import Prose from "../../components/Prose.astro";
+import { site } from "../../config/site";
+
+/** French twin of /app-privacy/. Keep the two in step, statement for statement. */
+const UPDATED = "19 novembre 2026";
+const mail = site.contactEmail;
+---
+
+<Base
+  title="Confidentialité de l'app"
+  description="Ce que l'app bêta de Present collecte, pourquoi, qui le traite et comment l'effacer."
+>
+  <Prose
+    title="Confidentialité de l'app"
+    updated={`Dernière mise à jour : ${UPDATED}`}
+    intro="Cette note concerne l'app Present pendant sa bêta fermée, sur beta.present-the-app.com. Ce site a sa propre note."
+  >
+    <h2>En bref</h2>
+    <p>
+      On garde ce que tu mets dans l'app pour qu'elle fonctionne : ton compte, les
+      quiz que tu fais sur des personnes, les idées de cadeaux qui en sortent, tes
+      listes d'envies et tes dates. Pour proposer des cadeaux, les réponses au quiz
+      (jamais le prénom de la personne, ni le tien) sont envoyées à notre fournisseur
+      d'IA. On ne vend rien, on n'affiche aucune publicité et on n'utilise aucun outil
+      de mesure tiers. Tu peux supprimer ton compte et tout son contenu à tout moment
+      depuis les réglages de l'app.
+    </p>
+
+    <h2>Qui est responsable</h2>
+    <p>
+      Present est un petit projet indépendant mené depuis la Suisse. Pour toute
+      question sur tes données, écris à <a href={`mailto:${mail}`}>{mail}</a>.
+    </p>
+
+    <h2>Ce qu'on garde, et pourquoi</h2>
+    <ul>
+      <li>
+        <strong>Ton compte</strong> : adresse e-mail, une empreinte de ton mot de passe
+        (jamais le mot de passe lui-même), ton prénom si tu le donnes, ton anniversaire
+        (jour et mois seulement, jamais l'année) si tu l'ajoutes, et tes clés d'accès
+        ou ta connexion en deux étapes si tu les actives. Pour que tu puisses te
+        connecter.
+      </li>
+      <li>
+        <strong>Ta demande d'accès</strong> : l'adresse e-mail avec laquelle tu as
+        demandé l'accès à la bêta, et si elle a été acceptée. Pour gérer les
+        invitations.
+      </li>
+      <li>
+        <strong>Quiz et idées</strong> : le prénom que tu donnes à la personne, tes
+        réponses (des choix dans nos listes, plus les favoris que tu tapes) et les idées
+        de cadeaux qui en sortent. Pour te les montrer et améliorer les suggestions
+        suivantes.
+      </li>
+      <li>
+        <strong>Listes d'envies, idées gardées, dates et contacts</strong> : ce que tu
+        ajoutes. Quand tu partages une liste, toute personne qui a le lien peut la
+        voir, et quelqu'un qui réserve un cadeau peut laisser un prénom, qu'il peut
+        retirer ensuite.
+      </li>
+      <li>
+        <strong>Appareils connectés</strong> : pour chaque session, la description du
+        navigateur et l'adresse IP, pour que tu puisses voir et fermer tes sessions
+        dans les réglages. Les sessions expirées sont effacées chaque nuit.
+      </li>
+      <li>
+        <strong>Statistiques d'usage</strong> : quelles étapes de l'app ont servi (par
+        exemple « un quiz a été terminé », « une idée a été gardée »), selon une liste
+        fixe et sans contenu. Les remarques que tu choisis de nous envoyer, et les
+        rapports d'erreur de l'app, débarrassés de leur contenu avant d'être gardés.
+        Pour savoir ce qui marche pendant la bêta.
+      </li>
+      <li>
+        <strong>Ton accord pour l'IA</strong> : une trace que tu as accepté, et de la
+        version du texte que tu as vue. Elle est gardée sous forme hachée après la
+        suppression du compte, car c'est notre preuve qu'on t'a demandé.
+      </li>
+    </ul>
+    <p>
+      Merci de ne rien écrire de privé sur qui que ce soit (santé, religion, etc.).
+      Le quiz ne le demande jamais.
+    </p>
+
+    <h2>L'IA qui propose les cadeaux</h2>
+    <p>
+      Les idées de cadeaux sont rédigées par un modèle d'IA d'<strong>Anthropic</strong>
+      (Anthropic PBC, États-Unis). Seulement après que tu as accepté l'écran
+      d'accord, à chaque demande d'idées on envoie les réponses au quiz : l'occasion,
+      le budget, les centres d'intérêt, le style et les goûts en cadeaux que tu as
+      choisis, et les favoris que tu as tapés. On n'envoie jamais le prénom de la
+      personne, le tien, ton e-mail ni rien qui vous identifie. Anthropic traite ces
+      données pour nous selon ses conditions commerciales, qui lui interdisent de
+      s'en servir pour entraîner ses modèles.
+    </p>
+
+    <h2>Qui d'autre traite des données pour nous</h2>
+    <ul>
+      <li>
+        <strong>Cloudflare</strong> achemine le trafic vers l'app et fait la
+        vérification anti-robots du formulaire d'accès. Il voit ton adresse IP et les
+        pages demandées.
+      </li>
+      <li>
+        <strong>Resend</strong> envoie les e-mails de l'app (ton invitation, les
+        réinitialisations de mot de passe). Il reçoit ton adresse e-mail et le message.
+      </li>
+      <li>
+        <strong>Openverse</strong> et les sites vers lesquels il renvoie fournissent
+        certaines photos d'illustration des idées. Ton navigateur charge ces images
+        directement, donc ces sites voient ton adresse IP. On ne leur envoie que les
+        mots de recherche du cadeau.
+      </li>
+    </ul>
+    <p>
+      L'app et sa base de données tournent sur des serveurs en Suisse qu'on gère
+      nous-mêmes. Anthropic, Cloudflare et Resend sont basés aux États-Unis ; les
+      données qui leur sont envoyées quittent la Suisse avec les garanties que chacun
+      prévoit pour ces transferts.
+    </p>
+
+    <h2>Combien de temps on les garde</h2>
+    <p>
+      Aussi longtemps que ton compte existe. Supprimer ton compte dans les réglages
+      efface aussitôt ton compte et tout son contenu, sauf la trace d'accord
+      ci-dessus. Les journaux du serveur et les sauvegardes se renouvellent en moins de
+      trois mois.
+    </p>
+
+    <h2>Âge</h2>
+    <p>L'app est destinée aux personnes de 13 ans et plus.</p>
+
+    <h2>Tes droits</h2>
+    <p>
+      Tu peux demander ce qu'on a sur toi, le faire corriger ou effacer, ou en
+      recevoir une copie. Tu peux faire l'essentiel toi-même dans l'app ; pour le
+      reste, écris à <a href={`mailto:${mail}`}>{mail}</a>. Tu peux aussi saisir le
+      Préposé fédéral à la protection des données et à la transparence (PFPDT).
+    </p>
+
+    <h2>Changements</h2>
+    <p>
+      Si quelque chose change de façon importante, la date en haut change aussi, et
+      on prévient les testeurs par e-mail.
+    </p>
+  </Prose>
+</Base>

@@ -37,6 +37,7 @@ export function localeFromPath(pathname: string): Locale {
 const ROUTES: ReadonlyArray<Record<Locale, string>> = [
   { en: "/", fr: "/fr/" },
   { en: "/privacy/", fr: "/fr/confidentialite/" },
+  { en: "/app-privacy/", fr: "/fr/app-confidentialite/" },
   { en: "/contact/", fr: "/fr/contact/" },
   { en: "/writing/", fr: "/fr/journal/" },
   // One success page carrying every language: the form provider's
